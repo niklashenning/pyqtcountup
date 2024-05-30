@@ -28,21 +28,21 @@ class CountUp(QObject):
         self.value = 0
         self.is_running = False
         self.timeline = QTimeLine(self.duration, self.label)
+        self.timeline.setDuration(duration)
         self.timeline.setEasingCurve(easing)
+        self.timeline.frameChanged.connect(lambda v: self.__frame_changed(v))
+        self.timeline.finished.connect(self.__timeline_finished)
 
     def start(self):
         frame_range_start = Utils.get_timeline_value_from_value(self.start_value, self.decimal_places)
         frame_range_end = Utils.get_timeline_value_from_value(self.end_value, self.decimal_places)
-
         self.timeline.setFrameRange(frame_range_start, frame_range_end)
-        self.timeline.frameChanged.connect(lambda v: self.__frame_changed(v))
-        self.timeline.finished.connect(self.__timeline_finished)
         self.__frame_changed(frame_range_start)
         self.is_running = True
         self.timeline.start()
 
     def update(self, new_end_value: int):
-        self.stop()
+        self.timeline.stop()
         self.setStartValue(self.value)
         self.setEndValue(new_end_value)
         self.start()
