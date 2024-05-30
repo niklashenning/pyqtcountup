@@ -1,14 +1,19 @@
 from qtpy.QtWidgets import QLabel
-from qtpy.QtCore import QTimeLine, QEasingCurve
+from qtpy.QtCore import QTimeLine, QEasingCurve, Signal, QObject
 from .utils import Utils
 
 
-class CountUp:
+class CountUp(QObject):
+
+    finished = Signal()
 
     def __init__(self, label: QLabel, from_value: int | float = 0, to_value: int | float = 100,
                  duration: int = 1000, decimals: int = 0, decimal_point: str = '.',
                  thousands_separator: str = '', prefix: str = '',
-                 prefix_before_minus: bool = True, suffix: str = ''):
+                 prefix_before_minus: bool = True, suffix: str = '',
+                 easing: QEasingCurve = QEasingCurve.Type.OutCubic):
+        super(CountUp, self).__init__(None)
+
         self.label = label
         self.from_value = from_value
         self.to_value = to_value
@@ -19,6 +24,7 @@ class CountUp:
         self.prefix = prefix
         self.prefix_before_minus = prefix_before_minus
         self.suffix = suffix
+        self.easing = easing
 
     def start(self):
         def frame_changed(timeline_value):
@@ -34,6 +40,9 @@ class CountUp:
 
             self.label.setText(full_string)
 
+        def timeline_finished():
+            self.finished.emit()
+
         frame_range_start = Utils.get_timeline_value_from_value(self.from_value, self.decimals)
         frame_range_end = Utils.get_timeline_value_from_value(self.to_value, self.decimals)
 
@@ -41,6 +50,7 @@ class CountUp:
         timeline.setFrameRange(frame_range_start, frame_range_end)
         timeline.setEasingCurve(QEasingCurve.Type.OutCubic)
         timeline.frameChanged.connect(frame_changed)
+        timeline.finished.connect(timeline_finished)
         timeline.start()
 
     def pause(self):
@@ -84,3 +94,6 @@ class CountUp:
 
     def setSuffix(self, suffix: str):
         self.suffix = suffix
+
+    def setEasing(self, easing: QEasingCurve):
+        self.easing = easing
