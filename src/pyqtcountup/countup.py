@@ -10,7 +10,7 @@ class CountUp(QObject):
     def __init__(self, label: QLabel, start_value: int | float = 0, end_value: int | float = 100,
                  duration: int = 1000, decimal_places: int = 0, decimal: str = '.',
                  thousands_separator: str = '', prefix: str = '', prefix_before_minus: bool = True,
-                 suffix: str = '', easing: QEasingCurve = QEasingCurve.Type.OutCubic):
+                 suffix: str = '', easing: QEasingCurve.Type | None = QEasingCurve.Type.OutCubic):
         super(CountUp, self).__init__(None)
 
         self.label = label
@@ -29,7 +29,12 @@ class CountUp(QObject):
         self.is_running = False
         self.timeline = QTimeLine(self.duration, self.label)
         self.timeline.setDuration(duration)
-        self.timeline.setEasingCurve(easing)
+
+        if easing is None:
+            self.timeline.setEasingCurve(QEasingCurve.Type.Linear)
+        else:
+            self.timeline.setEasingCurve(easing)
+
         self.timeline.frameChanged.connect(lambda v: self.__frame_changed(v))
         self.timeline.finished.connect(self.__timeline_finished)
 
@@ -129,12 +134,15 @@ class CountUp(QObject):
     def setSuffix(self, suffix: str):
         self.suffix = suffix
 
-    def getEasing(self) -> QEasingCurve:
+    def getEasing(self) -> QEasingCurve.Type | None:
         return self.easing
 
-    def setEasing(self, easing: QEasingCurve):
+    def setEasing(self, easing: QEasingCurve.Type | None):
         self.easing = easing
-        self.timeline.setEasingCurve(easing)
+        if easing is None:
+            self.timeline.setEasingCurve(QEasingCurve.Type.Linear)
+        else:
+            self.timeline.setEasingCurve(easing)
 
     def isRunning(self) -> bool:
         return self.is_running
