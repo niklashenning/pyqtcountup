@@ -17,6 +17,8 @@ def test_get_timeline_value_from_value():
 
     assert Utils.get_timeline_value_from_value(124.78, 2) == 12478
     assert Utils.get_timeline_value_from_value(-2832.63, 2) == -283263
+    assert Utils.get_timeline_value_from_value(124, 0) == 124
+    assert Utils.get_timeline_value_from_value(-124, 0) == -124
 
 
 def test_get_value_from_timeline_value():
@@ -25,3 +27,5 @@ def test_get_value_from_timeline_value():
 
     assert Utils.get_value_from_timeline_value(12478, 2) == 124.78
     assert Utils.get_value_from_timeline_value(-283263, 2) == -2832.63
+    assert Utils.get_value_from_timeline_value(124, 0) == 124
+    assert Utils.get_value_from_timeline_value(-124, 0) == -124
