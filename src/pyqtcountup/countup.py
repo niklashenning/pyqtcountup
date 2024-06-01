@@ -11,7 +11,7 @@ class CountUp(QObject):
     def __init__(self, label: QLabel, start_value: int | float = 0, end_value: int | float = 100,
                  duration: int = 1000, decimal_places: int = 0, decimal: str = '.',
                  thousands_separator: str = '', prefix: str = '', prefix_before_minus: bool = True,
-                 suffix: str = '', easing: QEasingCurve.Type | None = QEasingCurve.Type.OutCubic):
+                 suffix: str = '', easing: QEasingCurve.Type | None = QEasingCurve.Type.OutExpo):
         """Create a new CountUp instance
 
         :param label: label to animate the text of
@@ -44,6 +44,7 @@ class CountUp(QObject):
 
         self.__value = 0
         self.__is_running = False
+        self.__is_paused = False
 
         # Init timeline
         self.__timeline = QTimeLine(self.__duration, self.__label)
@@ -65,6 +66,7 @@ class CountUp(QObject):
         self.__timeline.setFrameRange(frame_range_start, frame_range_end)
         self.__frame_changed(frame_range_start)
         self.__is_running = True
+        self.__is_paused = False
         self.__timeline.start()
 
     def update(self, new_end_value: int):
@@ -78,14 +80,18 @@ class CountUp(QObject):
     def pause(self):
         """Pause the running animation"""
 
-        self.__timeline.setPaused(True)
-        self.__is_running = False
+        if not self.__is_paused and self.__is_running:
+            self.__timeline.setPaused(True)
+            self.__is_running = False
+            self.__is_paused = True
 
     def resume(self):
         """Resume the paused animation"""
 
-        self.__is_running = True
-        self.__timeline.resume()
+        if self.__is_paused:
+            self.__is_running = True
+            self.__is_paused = False
+            self.__timeline.resume()
 
     def stop(self):
         """Stop the animation"""
