@@ -72,7 +72,8 @@ class CountUp(QObject):
     def update(self, new_end_value: int):
         """Update the animation end value while the animation is running"""
 
-        self.__timeline.stop()
+        if self.__is_running:
+            self.__timeline.stop()
         self.setStartValue(self.__value)
         self.setEndValue(new_end_value)
         self.start()
@@ -98,13 +99,15 @@ class CountUp(QObject):
 
         self.__timeline.stop()
         self.__is_running = False
+        self.__is_paused = False
 
     def reset(self):
         """Reset the animation and show the start value"""
-
-        self.__timeline.stop()
-        self.__is_running = False
+        if self.__is_running:
+            self.__timeline.stop()
+            self.__is_running = False
         self.__frame_changed(Utils.get_timeline_value_from_value(self.__start_value, self.__decimal_places))
+        self.__is_paused = False
 
     def getLabel(self) -> QLabel:
         """Get the label
@@ -305,6 +308,14 @@ class CountUp(QObject):
         """
 
         return self.__is_running
+
+    def isPaused(self) -> bool:
+        """Get whether the animation is currently paused
+
+        :return: whether the animation is paused
+        """
+
+        return self.__is_paused
 
     def __frame_changed(self, timeline_value: int):
         """React to the frameChanged signal of the QTimeLine

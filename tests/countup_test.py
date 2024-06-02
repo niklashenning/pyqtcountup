@@ -267,3 +267,28 @@ def test_is_running(qtbot):
     assert countup.isRunning() == True
     countup.reset()
     assert countup.isRunning() == False
+
+
+def test_is_paused(qtbot):
+    """Test checking if the animation is paused"""
+
+    label = QLabel()
+    countup = CountUp(label)
+
+    assert countup.isPaused() == False
+    countup.start()
+    assert countup.isPaused() == False
+    countup.pause()
+    assert countup.isPaused() == True
+    countup.resume()
+    assert countup.isPaused() == False
+    countup.pause()
+    assert countup.isPaused() == True
+    countup.stop()
+    assert countup.isPaused() == False
+    countup.start()
+    assert countup.isPaused() == False
+    countup.pause()
+    assert countup.isPaused() == True
+    countup.reset()
+    assert countup.isPaused() == False
