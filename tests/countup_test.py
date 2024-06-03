@@ -16,7 +16,7 @@ def test_initial_values(qtbot):
     assert countup.getDuration() == 1000
     assert countup.getDecimalPlaces() == 0
     assert countup.getDecimal() == '.'
-    assert countup.getThousandsSeparator() == ''
+    assert countup.getSeparator() == ''
     assert countup.getPrefix() == ''
     assert countup.isPrefixBeforeMinus() == True
     assert countup.getSuffix() == ''
@@ -29,8 +29,8 @@ def test_values_constructor(qtbot):
 
     label = QLabel()
     countup = CountUp(label, start_value=-2124.24, end_value=9172.52, duration=2500,
-                      decimal_places=2, decimal=',', thousands_separator='.',
-                      prefix='€', prefix_before_minus=False, suffix=' EUR', easing=None)
+                      decimal_places=2, decimal=',', separator='.', prefix='€',
+                      prefix_before_minus=False, suffix=' EUR', easing=None)
 
     assert countup.getLabel() == label
     assert countup.getStartValue() == -2124.24
@@ -38,7 +38,7 @@ def test_values_constructor(qtbot):
     assert countup.getDuration() == 2500
     assert countup.getDecimalPlaces() == 2
     assert countup.getDecimal() == ','
-    assert countup.getThousandsSeparator() == '.'
+    assert countup.getSeparator() == '.'
     assert countup.getPrefix() == '€'
     assert countup.isPrefixBeforeMinus() == False
     assert countup.getSuffix() == ' EUR'
@@ -105,15 +105,15 @@ def test_set_decimal(qtbot):
     assert label.text() == '0,00'
 
 
-def test_set_thousands_separator(qtbot):
+def test_set_separator(qtbot):
     """Test setting the thousands separator"""
 
     label = QLabel()
     countup = CountUp(label)
-    countup.setThousandsSeparator(',')
+    countup.setSeparator(',')
     countup.setStartValue(1200)
     countup.reset()
-    assert countup.getThousandsSeparator() == ','
+    assert countup.getSeparator() == ','
     assert label.text() == '1,200'
 
 
@@ -193,6 +193,7 @@ def test_update(qtbot):
     countup = CountUp(label)
     countup.setEndValue(1000)
     countup.setDuration(100)
+    countup.setEasing(None)
     countup.start()
     countup.update(-250)
     QTest.qWait(500)

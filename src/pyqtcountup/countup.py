@@ -10,7 +10,7 @@ class CountUp(QObject):
 
     def __init__(self, label: QLabel, start_value: int | float = 0, end_value: int | float = 100,
                  duration: int = 1000, decimal_places: int = 0, decimal: str = '.',
-                 thousands_separator: str = '', prefix: str = '', prefix_before_minus: bool = True,
+                 separator: str = '', prefix: str = '', prefix_before_minus: bool = True,
                  suffix: str = '', easing: QEasingCurve.Type | None = QEasingCurve.Type.OutExpo):
         """Create a new CountUp instance
 
@@ -20,7 +20,7 @@ class CountUp(QObject):
         :param duration: duration of the animation
         :param decimal_places: amount of decimal places that will be displayed
         :param decimal: decimal of the number
-        :param thousands_separator: thousands separator of the number
+        :param separator: thousands separator of the number
         :param prefix: prefix that will be shown before the value
         :param prefix_before_minus: whether to show the prefix before or after the minus for negative values
         :param suffix: suffix that will be shown behind the value
@@ -36,7 +36,7 @@ class CountUp(QObject):
         self.__duration = duration
         self.__decimal_places = decimal_places
         self.__decimal = decimal
-        self.__thousands_separator = thousands_separator
+        self.__separator = separator
         self.__prefix = prefix
         self.__prefix_before_minus = prefix_before_minus
         self.__suffix = suffix
@@ -222,21 +222,21 @@ class CountUp(QObject):
 
         self.__decimal = decimal
 
-    def getThousandsSeparator(self) -> str:
+    def getSeparator(self) -> str:
         """Get the thousands separator of the number
 
-        :return: thousands separator
+        :return: separator
         """
 
-        return self.__thousands_separator
+        return self.__separator
 
-    def setThousandsSeparator(self, thousands_separator: str):
+    def setSeparator(self, separator: str):
         """Set the thousands separator of the number
 
-        :param thousands_separator: new thousands separator
+        :param separator: new separator
         """
 
-        self.__thousands_separator = thousands_separator
+        self.__separator = separator
 
     def getPrefix(self) -> str:
         """Get the prefix that will be shown before the number
@@ -329,7 +329,7 @@ class CountUp(QObject):
         value = Utils.get_value_from_timeline_value(timeline_value, self.__decimal_places)
         self.__value = value
         value_string = Utils.format_value(value, self.__decimal_places,
-                                          self.__decimal, self.__thousands_separator)
+                                          self.__decimal, self.__separator)
 
         # Add prefix and suffix
         if not self.__prefix_before_minus and value < 0:
