@@ -61,8 +61,25 @@ class CountUp(QObject):
     def start(self):
         """Start the animation"""
 
-        frame_range_start = Utils.get_timeline_value_from_value(self.__start_value, self.__decimal_places)
-        frame_range_end = Utils.get_timeline_value_from_value(self.__end_value, self.__decimal_places)
+        self.__start_animation(self.__start_value, self.__end_value)
+
+    def update(self, new_end_value: int):
+        """Update the animation end value while the animation is running"""
+
+        if self.__is_running:
+            self.__timeline.stop()
+        self.__end_value = new_end_value
+        self.__start_animation(self.__value, self.__end_value)
+
+    def __start_animation(self, start_value: int | float, end_value: int | float):
+        """Start the animation with given start and end values
+
+        :param start_value: start value of the animation
+        :param end_value: end value of the animation
+        """
+
+        frame_range_start = Utils.get_timeline_value_from_value(start_value, self.__decimal_places)
+        frame_range_end = Utils.get_timeline_value_from_value(end_value, self.__decimal_places)
         self.__timeline.setFrameRange(frame_range_start, frame_range_end)
         self.__timeline.setDuration(self.__duration)
 
@@ -75,15 +92,6 @@ class CountUp(QObject):
         self.__is_running = True
         self.__is_paused = False
         self.__timeline.start()
-
-    def update(self, new_end_value: int):
-        """Update the animation end value while the animation is running"""
-
-        if self.__is_running:
-            self.__timeline.stop()
-        self.setStartValue(self.__value)
-        self.setEndValue(new_end_value)
-        self.start()
 
     def pause(self):
         """Pause the running animation"""
