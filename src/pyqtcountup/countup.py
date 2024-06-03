@@ -64,6 +64,13 @@ class CountUp(QObject):
         frame_range_start = Utils.get_timeline_value_from_value(self.__start_value, self.__decimal_places)
         frame_range_end = Utils.get_timeline_value_from_value(self.__end_value, self.__decimal_places)
         self.__timeline.setFrameRange(frame_range_start, frame_range_end)
+        self.__timeline.setDuration(self.__duration)
+
+        if self.__easing is None:
+            self.__timeline.setEasingCurve(QEasingCurve.Type.Linear)
+        else:
+            self.__timeline.setEasingCurve(self.__easing)
+
         self.__frame_changed(frame_range_start)
         self.__is_running = True
         self.__is_paused = False
@@ -182,7 +189,6 @@ class CountUp(QObject):
         """
 
         self.__duration = duration
-        self.__timeline.setDuration(duration)
 
     def getDecimalPlaces(self) -> int:
         """Get the amount of decimal places of the number
@@ -295,11 +301,6 @@ class CountUp(QObject):
         """
 
         self.__easing = easing
-
-        if easing is None:
-            self.__timeline.setEasingCurve(QEasingCurve.Type.Linear)
-        else:
-            self.__timeline.setEasingCurve(easing)
 
     def isRunning(self) -> bool:
         """Get whether the animation is currently running
