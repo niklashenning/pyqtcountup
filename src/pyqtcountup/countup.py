@@ -60,38 +60,13 @@ class CountUp(QObject):
 
     def start(self):
         """Start the animation"""
-
         self.__start_animation(self.__start_value, self.__end_value)
 
     def update(self, new_end_value: int):
         """Update the animation end value while the animation is running"""
 
-        if self.__is_running:
-            self.__timeline.stop()
         self.__end_value = new_end_value
         self.__start_animation(self.__value, self.__end_value)
-
-    def __start_animation(self, start_value: int | float, end_value: int | float):
-        """Start the animation with given start and end values
-
-        :param start_value: start value of the animation
-        :param end_value: end value of the animation
-        """
-
-        frame_range_start = Utils.get_timeline_value_from_value(start_value, self.__decimal_places)
-        frame_range_end = Utils.get_timeline_value_from_value(end_value, self.__decimal_places)
-        self.__timeline.setFrameRange(frame_range_start, frame_range_end)
-        self.__timeline.setDuration(self.__duration)
-
-        if self.__easing is None:
-            self.__timeline.setEasingCurve(QEasingCurve.Type.Linear)
-        else:
-            self.__timeline.setEasingCurve(self.__easing)
-
-        self.__frame_changed(frame_range_start)
-        self.__is_running = True
-        self.__is_paused = False
-        self.__timeline.start()
 
     def pause(self):
         """Pause the running animation"""
@@ -325,6 +300,31 @@ class CountUp(QObject):
         """
 
         return self.__is_paused
+
+    def __start_animation(self, start_value: int | float, end_value: int | float):
+        """Start the animation with given start and end values
+
+        :param start_value: start value of the animation
+        :param end_value: end value of the animation
+        """
+
+        if self.__is_running:
+            self.__timeline.stop()
+
+        frame_range_start = Utils.get_timeline_value_from_value(start_value, self.__decimal_places)
+        frame_range_end = Utils.get_timeline_value_from_value(end_value, self.__decimal_places)
+        self.__timeline.setFrameRange(frame_range_start, frame_range_end)
+        self.__timeline.setDuration(self.__duration)
+
+        if self.__easing is None:
+            self.__timeline.setEasingCurve(QEasingCurve.Type.Linear)
+        else:
+            self.__timeline.setEasingCurve(self.__easing)
+
+        self.__frame_changed(frame_range_start)
+        self.__is_running = True
+        self.__is_paused = False
+        self.__timeline.start()
 
     def __frame_changed(self, timeline_value: int):
         """React to the frameChanged signal of the QTimeLine
