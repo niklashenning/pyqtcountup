@@ -13,10 +13,11 @@ class Window(QMainWindow):
         self.setWindowTitle('PyQt CountUp Demo')
 
         # Create map for easing curves
+        self.easing_curve_ignore_list = ['Custom', 'TCBSpline', 'BezierSpline', 'NCurveTypes',
+                                         'InCurve', 'OutCurve', 'SineCurve', 'CosineCurve']
         self.easing_curve_map = {}
         for key, value in vars(QEasingCurve).items():
-            if (isinstance(value, QEasingCurve.Type)
-                    and key not in ['Custom', 'TCBSpline', 'BezierSpline', 'NCurveTypes']):
+            if isinstance(value, QEasingCurve.Type) and key not in self.easing_curve_ignore_list:
                 self.easing_curve_map[key] = value
 
         # Create label
