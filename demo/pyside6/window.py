@@ -2,7 +2,7 @@ from PySide6.QtCore import Qt, QEasingCurve
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (QMainWindow, QPushButton, QComboBox, QVBoxLayout, QCheckBox, QWidget,
                                QSpinBox, QLineEdit, QHBoxLayout, QLabel, QFormLayout, QDoubleSpinBox)
-from src.pyqtcountup import CountUp
+from pyqtcountup import CountUp
 
 
 class Window(QMainWindow):
